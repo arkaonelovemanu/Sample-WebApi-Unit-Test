@@ -57,6 +57,8 @@ Param(
 )
 
 [Reflection.Assembly]::LoadWithPartialName("System.Security") | Out-Null
+
+Write-Output $pwd
 function MD5HashFile([string] $filePath)
 {
     if ([string]::IsNullOrEmpty($filePath) -or !(Test-Path $filePath -PathType Leaf))
