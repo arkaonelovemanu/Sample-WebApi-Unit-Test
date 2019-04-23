@@ -56,6 +56,7 @@ Task("Build")
         // Use MSBuild
         var settings = new MSBuildSettings()
                             .WithProperty("OutputPath", buildDirPath.FullPath)
+                            .WithTarget("build")
                             .SetConfiguration(configuration)
                             .SetVerbosity(Verbosity.Verbose)
                             .UseToolVersion(MSBuildToolVersion.VS2017)
@@ -118,15 +119,35 @@ Task("Package-Nuget")
 {
     EnsureDirectoryExists(packageDir);
 
-    // MSBuild("PROJECT_NAME.csproj", settings =>
-    //     settings.SetConfiguration(configuration)
-    //     .UseToolVersion(MSBuildToolVersion.VS2015)
-    //     .WithTarget("Package")
-    //     .WithProperty("VisualStudioVersion", new string[]{"14.0"})
-    //     .WithProperty("PackageLocation", new string[]{ packageDir.ToString()  })
-    //     .WithProperty("PackageTempRootDir", new string[]{"root"})
-    //     );
-
+    //  var nuGetPackSettings = new NuGetPackSettings
+	// {
+	// 	OutputDirectory = packageDir,
+	// 	IncludeReferencedProjects = true,
+	// 	Properties = new Dictionary<string, string>
+	// 	{
+	// 		{ "Configuration", "Release" }
+	// 	}
+	// };
+        var nuGetPackSettings   = new NuGetPackSettings {
+                                    Id                      = "Sample-API-Unit-Test",
+                                    Version                 = "0.0.0.1",
+                                    Title                   = "Cake Demo",
+                                    Authors                 = new[] {"Mouanarshi Santra"},
+                                    Description             = "Demo of creating cake.build scripts.",
+                                    Summary                 = "Excellent summary of what the Cake (C# Make) build tool does.",
+                                    ProjectUrl              = new Uri("https://github.com/arkaonelovemanu/Cake.Demo"),
+                                    Files                   = new [] {
+                                                                        new NuSpecContent {Source = "**"},
+                                                                      },
+                                    BasePath                = buildDir.ToString() + "/_PublishedWebsites/WebAPI/",
+                                    OutputDirectory         = packageDir,
+                                    IncludeReferencedProjects = true,
+                                	Properties = new Dictionary<string, string>
+                                	{
+                                		{ "Configuration", "Release" }
+                                	}
+                                };
+    NuGetPack( nuGetPackSettings);
 
 });
 
